@@ -1,0 +1,143 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    def config = rootProject.extensions.getByName("ext")
+
+    compileSdkVersion config.getAt("compile_sdk")
+    buildToolsVersion config.getAt("build_tools")
+
+    defaultConfig {
+        applicationId config.getAt("application_id")
+        minSdkVersion config.getAt("min_sdk")
+        targetSdkVersion config.getAt("target_sdk")
+        versionCode config.getAt("version_code")
+        versionName config.getAt("version_name")
+        testInstrumentationRunner config.getAt("test_runner")
+    }
+
+    packagingOptions {
+        exclude 'LICENSE.txt'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+    }
+
+    lintOptions {
+        quiet true
+        abortOnError false
+        ignoreWarnings true
+        disable 'InvalidPackage'            //Some libraries have issues with this.
+        disable 'OldTargetApi'              //Lint gives this warning but SDK 20 would be Android L Beta.
+        disable 'IconDensities'             //For testing purpose. This is safe to remove.
+        disable 'IconMissingDensityFolder'  //For testing purpose. This is safe to remove.
+    }
+
+    signingConfigs {
+        Key {
+            try {
+                storeFile file(config.getAt("keystore"))
+                storePassword config.getAt("keystorePass")
+                keyAlias config.getAt("alias")
+                keyPassword config.getAt("aliasPass")
+            }
+            catch (ignored) {
+                throw new InvalidUserDataException("You should define KEYSTORE_PASSWORD and KEY_PASSWORD in gradle.properties.")
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            //signingConfig signingConfigs.Key
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                    'proguard-rules.pro',
+                    'proguard-square.pro',
+                    'proguard-support.pro',
+                    'proguard-rx.pro'
+        }
+        debug {
+            debuggable true
+        }
+    }
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+
+    sourceSets {
+        main {
+            res.srcDirs = [
+                    'src/main/res-main',
+                    file('src/main/res-screen')
+                            .listFiles()
+                            .each { res.srcDirs += it.path }
+            ]
+        }
+        main.java.srcDirs += 'src/main/kotlin'
+        main.java.srcDirs += [file("$buildDir/generated/source/kapt/main")]
+        test.java.srcDirs += 'src/test/kotlin'
+        androidTest.java.srcDirs += 'src/androidTest/kotlin'
+    }
+}
+
+kapt {
+    generateStubs = true
+}
+
+dependencies {
+    def supportDependencies = rootProject.ext.supportDependencies
+    def injectDependencies = rootProject.ext.injectDependencies
+    def networkDependencies = rootProject.ext.networkDependencies
+    def coreDependencies = rootProject.ext.coreDependencies
+    def architectureComponents =rootProject.ext.architectureComponents
+    def appDependencies = rootProject.ext.appDependencies
+    def developmentDependencies = rootProject.ext.developmentDependencies
+    //----- Kotlin
+    implementation architectureComponents.kotlin
+/*
+    //----- Support
+    implementation supportDependencies.supportCompat
+    implementation supportDependencies.supportRecyclerView
+    implementation supportDependencies.constraintLayout
+
+    //----- Core
+    implementation coreDependencies.logger
+    implementation coreDependencies.fragmentation
+
+    //----- Kotlin
+    implementation architectureComponents.kotlin
+
+    //----- Architecture Components
+    implementation architectureComponents.architectureRuntime
+    implementation architectureComponents.architectureExtensions
+    kapt           architectureComponents.architectureCompiler
+
+    //----- Dagger 2 Injection Library
+    implementation injectDependencies.dagger
+    kapt           injectDependencies.daggerCompiler
+
+    //----- RxJava 2
+    implementation injectDependencies.rxjava
+    implementation injectDependencies.rxandroid
+    implementation injectDependencies.rxbinding
+    implementation injectDependencies.rxpermissions
+
+    //----- Retrofit HTTP / Rest Library
+    implementation networkDependencies.retrofitRxJavaAdapter
+    implementation networkDependencies.okHttp
+    implementation networkDependencies.okHttpLogging
+
+    //----- Library
+    implementation appDependencies.baseRecyclerView
+
+    //Development
+    implementation developmentDependencies.leakCanary
+    implementation developmentDependencies.blockCanary
+    implementation developmentDependencies.stetho
+    implementation developmentDependencies.stethoOkHttp*/
+}

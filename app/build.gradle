@@ -31,7 +31,8 @@ android {
         abortOnError false
         ignoreWarnings true
         disable 'InvalidPackage'            //Some libraries have issues with this.
-        disable 'OldTargetApi'              //Lint gives this warning but SDK 20 would be Android L Beta.
+        disable 'OldTargetApi'
+        //Lint gives this warning but SDK 20 would be Android L Beta.
         disable 'IconDensities'             //For testing purpose. This is safe to remove.
         disable 'IconMissingDensityFolder'  //For testing purpose. This is safe to remove.
     }
@@ -52,7 +53,7 @@ android {
 
     buildTypes {
         release {
-            //signingConfig signingConfigs.Key
+            signingConfig signingConfigs.Key
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
@@ -94,50 +95,51 @@ dependencies {
     def injectDependencies = rootProject.ext.injectDependencies
     def networkDependencies = rootProject.ext.networkDependencies
     def coreDependencies = rootProject.ext.coreDependencies
-    def architectureComponents =rootProject.ext.architectureComponents
+    def architectureComponents = rootProject.ext.architectureComponents
     def appDependencies = rootProject.ext.appDependencies
     def developmentDependencies = rootProject.ext.developmentDependencies
-    //----- Kotlin
-    implementation architectureComponents.kotlin
-/*
+    def testDependencies = rootProject.ext.testDependencies
+    implementation project(':core')
     //----- Support
     implementation supportDependencies.supportCompat
     implementation supportDependencies.supportRecyclerView
     implementation supportDependencies.constraintLayout
-
     //----- Core
     implementation coreDependencies.logger
     implementation coreDependencies.fragmentation
-
     //----- Kotlin
     implementation architectureComponents.kotlin
-
     //----- Architecture Components
     implementation architectureComponents.architectureRuntime
     implementation architectureComponents.architectureExtensions
-    kapt           architectureComponents.architectureCompiler
-
+    kapt architectureComponents.architectureCompiler
     //----- Dagger 2 Injection Library
     implementation injectDependencies.dagger
-    kapt           injectDependencies.daggerCompiler
-
+    kapt injectDependencies.daggerCompiler
     //----- RxJava 2
     implementation injectDependencies.rxjava
     implementation injectDependencies.rxandroid
     implementation injectDependencies.rxbinding
     implementation injectDependencies.rxpermissions
-
     //----- Retrofit HTTP / Rest Library
+    implementation(networkDependencies.retrofit) {
+        exclude module: 'okhttp'
+    }
     implementation networkDependencies.retrofitRxJavaAdapter
+    implementation networkDependencies.retrofitGsonConverter
     implementation networkDependencies.okHttp
-    implementation networkDependencies.okHttpLogging
-
+    implementation(networkDependencies.okHttpLogging) {
+        exclude group: 'org.json', module: 'json'
+        exclude module: 'okhttp'
+    }
     //----- Library
-    implementation appDependencies.baseRecyclerView
-
+    //implementation appDependencies.baseRecyclerView
     //Development
     implementation developmentDependencies.leakCanary
     implementation developmentDependencies.blockCanary
     implementation developmentDependencies.stetho
-    implementation developmentDependencies.stethoOkHttp*/
+    implementation developmentDependencies.stethoOkHttp
+    //Test
+    testCompile testDependencies.junit
+    testCompile testDependencies.testingSupportLib
 }

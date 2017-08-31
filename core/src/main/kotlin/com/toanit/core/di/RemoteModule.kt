@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package erikjhordanrey.android_kotlin_devises.di
+package com.toanit.core.di
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder

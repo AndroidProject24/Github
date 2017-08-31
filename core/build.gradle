@@ -1,7 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'realm-android'
 
 android {
     def config = rootProject.extensions.getByName("ext")
@@ -55,9 +56,6 @@ dependencies {
     implementation supportDependencies.supportRecyclerView
     implementation supportDependencies.supportDesign
     implementation supportDependencies.constraintLayout
-    //----- Core
-    implementation coreDependencies.logger
-    implementation coreDependencies.fragmentation
     //----- Kotlin
     implementation architectureComponents.kotlin
     //----- Architecture Components

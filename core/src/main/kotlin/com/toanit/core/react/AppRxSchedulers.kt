@@ -36,14 +36,14 @@ class AppRxSchedulers @Inject constructor() : RxSchedulers {
     /**
      * @return Scheduler that have to bes used for DB transaction
      */
-    override fun db(): Scheduler {
+    override fun diskIO(): Scheduler {
         return db
     }
 
     /**
      * @return Scheduler that have to bes used to interact with UI components
      */
-    override fun main(): Scheduler {
+    override fun mainThread(): Scheduler {
         return AndroidSchedulers.mainThread()
     }
 
@@ -58,7 +58,7 @@ class AppRxSchedulers @Inject constructor() : RxSchedulers {
     /**
      * @return Scheduler can be used for asynchronously performing blocking IO.
      */
-    override fun io(): Scheduler {
+    override fun networkIO(): Scheduler {
         return Schedulers.io()
     }
 

@@ -9,11 +9,11 @@ import io.reactivex.Scheduler
 
 interface RxSchedulers {
 
-    fun db(): Scheduler
+    fun diskIO(): Scheduler
 
-    fun main(): Scheduler
+    fun mainThread(): Scheduler
 
     fun computation(): Scheduler
 
-    fun io(): Scheduler
+    fun networkIO(): Scheduler
 }

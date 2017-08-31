@@ -1,8 +1,8 @@
 allprojects {
     repositories {
+        google()
         jcenter()
         mavenCentral()
-        maven { url 'https://maven.google.com' }
         maven { url 'http://oss.sonatype.org/content/repositories/snapshots' }
         maven { url 'https://github.com/eikaramba/stetho-realm/raw/master/maven-repo' }
         maven { url "https://jitpack.io" }
@@ -13,7 +13,7 @@ ext {
     //Support
     supportLibsVersion       = '26.0.0-beta2'
     constraintVersion        = '1.0.2'
-    architectureVersion      = '1.0.0-alpha3'
+    architectureVersion      = '1.0.0-alpha4'
 
     //Core
     loggerVersion            = '2.1.1'
@@ -82,7 +82,10 @@ ext {
             rxbinding              : "com.jakewharton.rxbinding2:rxbinding:${rxBindingVersion}",
             rxpermissions          : "com.tbruyelle.rxpermissions2:rxpermissions:${rxPermissionsVersion}",
             dagger                 : "com.google.dagger:dagger:${daggerVersion}",
+            daggerAndroid          : "com.google.dagger:dagger-android:${daggerVersion}",
+            daggerAndroidSupport   : "com.google.dagger:dagger-android-support:${daggerVersion}",
             daggerCompiler         : "com.google.dagger:dagger-compiler:${daggerVersion}",
+            daggerAndroidCompiler  : "com.google.dagger:dagger-android-processor:${daggerVersion}",
     ]
 
     networkDependencies = [
